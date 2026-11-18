@@ -1,0 +1,261 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   GLOBAL DESIGN TOKENS
+   রঙ, ফন্ট-সাইজ, রেডিয়াস — সব এখান থেকে নিয়ন্ত্রণ হয়।
+   রঙগুলো "R G B" চ্যানেল আকারে, যাতে Tailwind-এর opacity (bg-primary/20) কাজ করে।
+   ========================================================================== */
+:root {
+  /* Brand / primary */
+  --primary: 15 118 110;        /* #0F766E */
+  --primary-600: 17 94 89;
+  --primary-400: 20 184 166;
+  --primary-300: 94 234 212;
+  --primary-200: 127 235 220;
+  --primary-soft: 227 247 243;
+
+  /* Accents */
+  --info: 35 71 200;
+  --info-500: 59 99 240;
+  --info-soft: 230 237 255;
+  --violet: 109 40 217;
+  --violet-500: 124 58 237;
+  --violet-soft: 239 232 255;
+  --rose: 190 18 60;
+  --rose-soft: 255 228 234;
+  --danger: 225 29 72;
+  --bar-red: 248 113 113;
+  --chart-teal: 15 157 138;
+  --navy: 30 58 138;
+  --whatsapp: 37 211 102;
+  --whatsapp-ink: 5 59 27;
+
+  /* Ink & text */
+  --ink: 11 31 42;
+  --ink-deep: 7 22 30;
+  --ink-line: 27 51 64;
+  --text: 59 79 75;
+  --text-2: 75 95 91;
+  --muted: 94 114 110;
+  --faint: 107 127 123;
+
+  /* Surfaces & lines */
+  --bg: 244 247 246;
+  --surface: 255 255 255;
+  --surface-2: 249 251 250;
+  --surface-3: 244 248 247;
+  --band: 233 240 238;
+  --line: 217 227 224;
+  --line-strong: 201 214 211;
+  --line-soft: 227 234 232;
+  --line-faint: 237 243 241;
+  --track: 225 233 231;
+  --track-2: 213 224 221;
+
+  /* Status */
+  --ok-bg: 214 243 233;
+  --ok-fg: 10 107 75;
+  --ok: 4 120 87;
+  --warn-bg: 255 240 194;
+  --warn-fg: 122 82 0;
+  --amber: 217 119 6;
+  --bad-bg: 255 224 229;
+  --bad-fg: 168 16 44;
+  --tag-info-bg: 224 233 255;
+  --tag-info-fg: 30 64 175;
+
+  /* On dark */
+  --on-dark: 183 200 196;
+  --on-dark-2: 197 212 208;
+  --on-dark-3: 159 180 175;
+
+  /* Card visual washes */
+  --wash-teal: 227 247 243;
+  --wash-blue: 230 238 255;
+  --wash-green: 236 253 245;
+  --wash-violet: 243 240 255;
+  --wash-sky: 239 246 255;
+  --wash-mint: 231 247 244;
+
+  /* Typography */
+  --font-sans: "Inter", "Hind Siliguri", system-ui, sans-serif;
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 14px;
+  --fs-base: 15px;
+  --fs-lg: 16px;
+  --fs-body: 17px;
+  --fs-sub: 18px;
+  --fs-lead: 19px;
+  --fs-h4: 20px;
+  --fs-h3: 22px;
+  --fs-num: 24px;
+  --fs-num-lg: 30px;
+  --fs-stat: 58px;
+  --fs-price: 60px;
+  --fs-big: 44px;
+  --fs-h2: clamp(30px, 4.4vw, 48px);
+  --fs-h1: clamp(36px, 6vw, 68px);
+  --fs-cta: clamp(30px, 5vw, 56px);
+  --fs-display: clamp(80px, 18vw, 230px);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-phone: 38px;
+
+  /* Layout */
+  --maxw: 1200px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg font-sans text-body leading-[1.6] text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  button {
+    font-family: inherit;
+  }
+  :focus-visible {
+    outline: 3px solid rgb(var(--primary));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  input[type="range"] {
+    accent-color: rgb(var(--primary));
+  }
+}
+
+@layer components {
+  .section {
+    @apply relative mx-auto w-full max-w-page px-5 pb-8 pt-[90px];
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 text-base font-bold tracking-[.02em];
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-0.5 w-6 rounded-xs bg-current;
+  }
+  .h2 {
+    @apply mt-2 text-h2 font-bold tracking-[-.015em];
+  }
+  .lede {
+    @apply mt-3.5 text-sub text-text;
+  }
+
+  /* Tags */
+  .tag {
+    @apply inline-block whitespace-nowrap rounded-xs px-2.5 py-0.5 text-xs font-bold;
+  }
+  .tag-ok { @apply bg-ok-bg text-ok-fg; }
+  .tag-warn { @apply bg-warn-bg text-warn-fg; }
+  .tag-bad { @apply bg-bad-bg text-bad-fg; }
+  .tag-info { @apply bg-tag-info-bg text-tag-info-fg; }
+  .tag-mute { @apply bg-line-faint text-text-2; }
+
+  /* App window */
+  .win {
+    @apply relative overflow-hidden rounded-xl border border-line bg-surface shadow-win;
+  }
+  .wbar {
+    @apply flex items-center gap-2 border-b border-line-faint bg-surface-2 px-4 py-3;
+  }
+  .dot {
+    @apply h-[11px] w-[11px] rounded-full;
+  }
+  .pnl {
+    @apply overflow-hidden rounded-md border border-line-soft bg-surface;
+  }
+  .pnh {
+    @apply flex items-center justify-between gap-2 border-b border-line-faint px-3.5 py-[11px] text-sm font-bold;
+  }
+  .pnb {
+    @apply px-3.5 py-3;
+  }
+  .lbl {
+    @apply text-xs font-medium text-muted;
+  }
+  .th {
+    @apply grid gap-2.5 border-b border-line-faint px-3.5 py-2 text-2xs font-bold text-muted;
+  }
+  .trow {
+    @apply grid items-center gap-2.5 border-b border-line-faint/60 px-3.5 py-2.5 text-sm font-semibold last:border-b-0;
+  }
+  .phr {
+    @apply flex items-center justify-between gap-2 rounded-md border border-line-soft bg-surface px-3 py-2.5 text-xs font-semibold;
+  }
+
+  /* Tabs / chips */
+  .tab {
+    @apply inline-flex min-h-12 cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-md border border-line bg-surface px-5 text-lg font-semibold text-ink transition-colors hover:border-primary;
+  }
+  .tab-on {
+    @apply border-primary bg-primary text-white shadow-btn;
+  }
+  .chip {
+    @apply inline-flex min-h-[46px] cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-md border border-line bg-surface px-[18px] text-base font-semibold text-ink transition-colors hover:border-primary;
+  }
+  .chip-on {
+    @apply border-ink bg-ink text-white;
+  }
+
+  /* Pricing feature row */
+  .pf {
+    @apply flex items-start gap-3 text-lg font-medium leading-normal;
+  }
+  .pck {
+    @apply mt-px flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-sm bg-ok-bg text-ok;
+  }
+
+  /* Rotating conic border (framer-motion rotates the inner element) */
+  .conic {
+    background: conic-gradient(
+      rgb(var(--primary-400)),
+      rgb(var(--info-500)),
+      rgb(var(--violet-500)),
+      rgb(var(--primary-400))
+    );
+  }
+  .grid-bg {
+    background-image: linear-gradient(rgb(var(--ink) / .07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--ink) / .07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 38%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 60% 55% at 50% 38%, #000 20%, transparent 75%);
+  }
+  .barcode {
+    background: repeating-linear-gradient(
+      90deg,
+      rgb(var(--ink)) 0 2px,
+      transparent 2px 5px,
+      rgb(var(--ink)) 5px 6px,
+      transparent 6px 10px,
+      rgb(var(--ink)) 10px 13px,
+      transparent 13px 16px
+    );
+  }
+  .scrollx {
+    scrollbar-width: thin;
+  }
+}
