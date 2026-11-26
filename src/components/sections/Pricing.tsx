@@ -88,29 +88,42 @@ export function Pricing({ initialPlans }: { initialPlans?: PlanItem[] | null }) 
     initialPlans && initialPlans.length > 0 ? orderPlans(initialPlans) : []
   );
 
-  // Background refresh to keep client in sync
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    initialPlans && initialPlans.length > 0 ? "ready" : "loading"
+  );
+  const [attempt, setAttempt] = useState(0);
+
+  // Background refresh to keep client in sync (retries twice before showing an error)
   useEffect(() => {
     let isMounted = true;
     async function fetchPricingPlans() {
-      try {
-        const res = await fetch(`${API_BASE_URL}/public/plans`);
-        if (!res.ok) return;
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          if (isMounted) {
-            setPlans(orderPlans(json.data));
+      for (let i = 0; i < 3 && isMounted; i++) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/public/plans`, { cache: "no-store" });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+              if (isMounted) {
+                setPlans(orderPlans(json.data));
+                setStatus("ready");
+              }
+              return;
+            }
           }
+        } catch (err) {
+          console.warn("Pricing client sync:", err);
         }
-      } catch (err) {
-        console.warn("Pricing client sync:", err);
+        await new Promise((r) => setTimeout(r, 800 * (i + 1)));
       }
+      // keep showing server-rendered plans if we had them
+      if (isMounted) setStatus((st) => (st === "ready" ? st : "error"));
     }
 
     fetchPricingPlans();
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [attempt]);
 
   // Compute lowest numeric price for the headline
   const numericPrices = plans
@@ -128,6 +141,38 @@ export function Pricing({ initialPlans }: { initialPlans?: PlanItem[] | null }) 
             মাত্র ৳{bn(minPrice)} থেকে শুরু। ব্যবসা বড় হলে যেকোনো সময় আপগ্রেড করুন।
           </p>
         </Reveal>
+
+        {plans.length === 0 && status === "loading" && (
+          <div className="mt-[60px] grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-[420px] animate-pulse rounded-2xl border border-black/5 bg-white/70" />
+            ))}
+          </div>
+        )}
+
+        {plans.length === 0 && status === "error" && (
+          <div className="mx-auto mt-[60px] max-w-[520px] rounded-2xl border border-black/5 bg-white p-8 text-center">
+            <p className="text-lg font-bold">প্ল্যানগুলো এই মুহূর্তে লোড করা যাচ্ছে না</p>
+            <p className="mt-2 text-base opacity-70">
+              ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন, অথবা সরাসরি ফ্রি ডেমো বুক করুন।
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setStatus("loading");
+                  setAttempt((a) => a + 1);
+                }}
+                className="rounded-lg bg-ink px-5 py-2.5 text-base font-bold text-white"
+              >
+                আবার চেষ্টা করুন
+              </button>
+              <Btn href="#cta" className="min-h-[44px] px-5 text-base">
+                ফ্রি ডেমো
+              </Btn>
+            </div>
+          </div>
+        )}
 
         <div className="mt-[60px] grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {plans.map((p, idx) => {
